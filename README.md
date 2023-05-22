@@ -4,8 +4,9 @@ This package is used to generate the data for a watermarked image, so that it ca
 
 - Supports all image format supported by flutter, **including GIF**.
 - Supports text watermarking, image watermarking, and customization by inheriting `WatermarkedImage`.
-- Maintain the original format and size.
 - Implemented via PictureRecorder, not pixel manipulation.
+
+For PNG and GIF images, the original format will be maintained, while for other formats, the watermark generated will be in JPEG format.
 
 ## Getting started
 
