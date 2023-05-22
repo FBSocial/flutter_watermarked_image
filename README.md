@@ -6,7 +6,7 @@ This package is used to generate the data for a watermarked image, so that it ca
 - Supports text watermarking, image watermarking, and customization by inheriting `WatermarkedImage`.
 - Implemented via PictureRecorder, not pixel manipulation.
 
-For PNG and GIF images, the original format will be maintained, while for other formats, the watermark generated will be in JPEG format.
+After adding watermark to PNG, TIFF and WebP images, the output format will be PNG. GIF images will retain their original format, while other formats will generate JPEG data.
 
 ## Getting started
 

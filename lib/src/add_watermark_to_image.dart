@@ -20,7 +20,7 @@ Future<Uint8List> addWatermarkToImage(
   final watermarkedFrames = await Future.wait(
     frames.map((e) => addWatermarkToFrame(
           e,
-          decoder is img.PngDecoder
+          isOutputFormatPng(decoder!)
               ? ImageByteFormat.png
               : ImageByteFormat.rawRgba,
           config,
@@ -46,7 +46,7 @@ Future<Uint8List> addWatermarkToImage(
           bytes: watermarkedFrames[i]!.buffer));
     }
     return img.encodeGif(gifImage, repeat: codec.repetitionCount);
-  } else if (decoder is img.PngDecoder) {
+  } else if (isOutputFormatPng(decoder!)) {
     return watermarkedFrames.first!.buffer.asUint8List();
   } else {
     return img.encodeJpg(
@@ -85,3 +85,8 @@ Future<ByteData?> addWatermarkToFrame(
   final image = await picture.toImage(width, height);
   return image.toByteData(format: outputImageByteFormat);
 }
+
+bool isOutputFormatPng(img.Decoder decoder) =>
+    decoder is img.PngDecoder ||
+    decoder is img.TiffDecoder ||
+    decoder is img.WebPDecoder;
