@@ -85,11 +85,14 @@ Future<ByteData?> addWatermarkToFrame(
   final width = frame.image.width;
   final height = frame.image.height;
 
+  final size = Size(width.toDouble(), height.toDouble());
   for (final watermark in config) {
-    watermark.draw(
-      canvas,
-      Size(width.toDouble(), height.toDouble()),
-    );
+    final offset = watermark.getTranslation(size);
+    canvas.translate(offset.dx, offset.dy);
+    canvas.scale(watermark.scale);
+    watermark.draw(canvas, size);
+    canvas.scale(1 / watermark.scale);
+    canvas.translate(-offset.dx, -offset.dy);
   }
 
   final picture = recorder.endRecording();
