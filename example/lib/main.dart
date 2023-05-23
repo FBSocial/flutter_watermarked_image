@@ -36,6 +36,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   late List<WatermarkConfig> config;
+  final ValueNotifier<Uint8List?> image = ValueNotifier(null);
 
   @override
   void initState() {
@@ -59,6 +60,12 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
+  void dispose() {
+    image.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -68,6 +75,14 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            AspectRatio(
+                aspectRatio: 1,
+                child: ValueListenableBuilder<Uint8List?>(
+                    valueListenable: image,
+                    builder: (context, image, child) {
+                      if (image == null) return const SizedBox();
+                      return Image.memory(image);
+                    })),
             ElevatedButton(
                 onPressed: () async {
                   generateWatermarkedImage(
@@ -102,16 +117,11 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   generateWatermarkedImage(WatermarkedImage img, String outputName) async {
-    final tmpPath = await getTemporaryDirectory();
-    File file = File("${tmpPath.path}/$outputName");
-    file.writeAsBytes(await img.generateWatermarkedImage());
-
-    // ignore: avoid_print
-    print("watermarked image saved to ${file.path}");
+    image.value = await img.generateWatermarkedImage();
 
     if (context.mounted) {
-      SnackBar snackBar = SnackBar(
-        content: Text("watermarked image saved to ${file.path}"),
+      SnackBar snackBar = const SnackBar(
+        content: Text("watermarked image generated"),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
